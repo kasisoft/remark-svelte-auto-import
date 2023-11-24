@@ -1,0 +1,8 @@
+node_modules/
+logs/
+*.log
+npm-debug.log*
+lib/
+kasisoft-remark-svelte-auto-import-*
+.vscode/
+
