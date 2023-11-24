@@ -9,7 +9,6 @@ import test from 'ava';
 
 import { DEFAULT_OPTIONS, remarkSvelteAutoImport } from '../main';
 import { getResource } from './testutils';
-import { auLocateScriptNode } from '../main/astutils';
 
 const COMPONENT_MAP = {
     'Gollum': 'dodo',
