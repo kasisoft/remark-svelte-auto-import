@@ -163,7 +163,7 @@ for me to react.
 <!-- Definitions -->
 
 [build]: https://github.com/kasisoft/remark-svelte-auto-import/actions
-[build-badge]: https://github.com/kasisoft/remark-svelte-auto-import/workflows/main/badge.svg
+[build-badge]: https://github.com/kasisoft/remark-svelte-auto-import/actions/workflows/rsai.yml/badge.svg
 [esmonly]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 [license]: https://github.com/kasisoft/remark-svelte-auto-import/blob/main/license
 [markdown]: https://markdown.de/
