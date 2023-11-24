@@ -2,7 +2,16 @@
     "name": "@kasisoft/remark-svelte-auto-import",
     "version": "0.1.0",
     "description": "Automatically imports svelte components used within a markdown file processed with MDSVEX/remark",
+    "main": "lib/bundle.esm.js",
+    "types": "lib/index.d.ts",
     "type": "module",
+    "files": [
+        "lib/bundle.esm.js",
+        "lib/index.d.ts"
+    ],
+    "scripts": {
+        "prepublish": "rollup -c"
+    },
     "repository": {
         "type": "git",
         "url": "git@github.com:kasisoft/remark-svelte-auto-import.git"
@@ -14,6 +23,10 @@
     "author": "Daniel Kasmeroglu",
     "license": "MIT",
     "devDependencies": {
+        "@rollup/plugin-node-resolve": "^15.2.3",
+        "@rollup/plugin-typescript": "^11.1.5",
+        "rollup": "^4.5.2",
+        "tslib": "^2.6.2",
         "typescript": "^5.3.2"
     },
     "dependencies": {
