@@ -11,7 +11,7 @@ export default {
     }
   ],
   external: [
-    "chalk"
+    "unist-util-visit", "path", "fs", "fast-glob", "chalk", "unified"
   ],
   plugins: [
     resolve(),
