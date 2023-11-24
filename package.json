@@ -1,0 +1,16 @@
+{
+    "name": "@kasisoft/remark-svelte-auto-import",
+    "version": "0.1.0",
+    "description": "Automatically imports svelte components used within a markdown file processed with MDSVEX/remark",
+    "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:kasisoft/remark-svelte-auto-import.git"
+    },
+    "bugs": {
+        "url": "https://github.com/kasisoft/remark-svelte-auto-import/issues"
+    },
+    "homepage": "https://github.com/kasisoft/remark-svelte-auto-import",
+    "author": "Daniel Kasmeroglu",
+    "license": "MIT"
+}
