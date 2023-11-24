@@ -1,10 +1,14 @@
 import { ExecutionContext } from 'ava';
 import { Parent } from 'unist';
 import { unified } from 'unified';
+import { fileURLToPath } from 'url';
 import markdown from 'remark-parse';
 
 import path from 'path';
 import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
 
 const DIR_RESOURCES = path.resolve(path.join(__dirname, 'resources'));
 
