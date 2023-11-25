@@ -14,7 +14,7 @@ function imBuildImportLine(module: string, components: string[]): string {
     if (components.length == 1) {
         listed = components[0];
     } else {
-        listed = components.reduce((a, b) => `${a}, ${b}`);
+        listed = components.sort().reduce((a, b) => `${a}, ${b}`);
     }
     return `import { ${listed} } from '${module}';\n`;
 }
