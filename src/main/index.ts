@@ -1,10 +1,12 @@
 import { VFile } from 'vfile';
 import { Node, Parent } from 'unist';
+import path from 'path';
 
 import { warn, error, debugConfiguration, debugComponentMap, debug } from './log';
 import { imBuildImportText } from './importmap';
 import { cmBuildComponentMap } from './componentmap';
 import { auAppendScriptText, auGetOrCreateScriptNode } from './astutils';
+import { containsTag, toComponentName, trailingSlash } from './utils';
 
 const NOP = function() {};
 
@@ -25,6 +27,9 @@ export interface RemarkSvelteAutoImportOptions {
     /* alternatively/additionally provide a mapping between components and modules  */
     componentMap?      : {[component: string]: string};
 
+    /* mapping for local components (unless mapped in componentMap) */
+    localComponents?   : {[pathprefix: string]: string};
+
 } /* ENDINTERFACE */
 
 export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
@@ -41,16 +46,8 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
     ]
 };
 
-function debugRoot(tree: Node) {
-    debug('Markdown Tree:');
-    debug(JSON.stringify(tree, null, 4));
-}
-
 function collectUsedTags(content: string, tags: string[]): string[] {
-    const asSet = new Set<string>(
-        tags.filter(tag => (content.indexOf(`<${tag} `) !== -1) || (content.indexOf(`<${tag}>`) !== -1))
-    );
-    return Array.from(asSet);
+    return Array.from(new Set<string>(tags.filter(tag => containsTag(content, tag))));
 }
 
 function hasScanningSettings(config: RemarkSvelteAutoImportOptions): boolean {
@@ -67,6 +64,43 @@ function hasComponentMap(config: RemarkSvelteAutoImportOptions): boolean {
     return false;
 }
 
+// replicates the supplied mapping while resolving the keys and grating 
+// trailing slashes for keys and values
+function resolveKeyPathes(prefixMapping: {[fspath: string]: string}): {[fspath: string]: string} {
+    const result: {[fspath: string]: string} =  {};
+    Object.keys(prefixMapping).forEach(fspath => {
+        const pathPrefix   = trailingSlash(path.resolve(fspath));
+        result[pathPrefix] = trailingSlash(prefixMapping[fspath]);
+    });
+    return result;
+}
+
+function identifyMatchingPrefix(prefixes: string[], componentPath: string): string | null {
+    for (let idx in prefixes) {
+        const prefix = prefixes[idx];
+        if (componentPath.startsWith(prefix)) {
+            return prefix;
+        }
+    }
+    return null;
+}
+
+function mapLocalComponents(locals: string[], prefixMapping: {[prefix: string]: string}): {[prefix: string]: string} {
+    const resolvedMap = resolveKeyPathes(prefixMapping);
+    const prefixes    = Object.keys(resolvedMap);
+    const result: {[componentName: string]: string} = {};
+    locals.forEach(localComponent => {
+        const foundPrefix = identifyMatchingPrefix(prefixes, localComponent);
+        if (foundPrefix != null) {
+            const componentName   = toComponentName(localComponent);
+            result[componentName] = resolvedMap[foundPrefix] + localComponent.substring(foundPrefix.length);
+        } else {
+            warn(`Could not map component '${localComponent}'`);
+        }
+    });
+    return result;
+}
+
 // https://unifiedjs.com/learn/guide/create-a-plugin/
 export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = DEFAULT_OPTIONS) {
 
@@ -79,12 +113,15 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         return NOP;
     }
 
-    const componentMap = {...cmBuildComponentMap(config.directories, config.patterns), ...config.componentMap};
+    const scannedComponents    = cmBuildComponentMap(config.directories, config.patterns);
+    const mappedLocals         = mapLocalComponents(scannedComponents[1], config.localComponents ?? {});
+    const componentMap         = {...scannedComponents[0], ...mappedLocals, ...config.componentMap};
+    
     if (config.debug) {
         debugConfiguration(DEFAULT_OPTIONS, options, config);
     }
     if (config.debugComponentMap) {
-        debugComponentMap(componentMap);
+        debugComponentMap(scannedComponents, mappedLocals, config.componentMap, componentMap);
     }
 
     if (Object.keys(componentMap).length == 0) {
@@ -98,7 +135,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
     return function (tree: Parent, file: VFile) {
 
         if (config.debugRootBefore) {
-            debugRoot(tree);
+            debug('Markdown Tree (before)', tree);
         }
 
         /** 
@@ -128,7 +165,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         auAppendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
 
         if (config.debugRootAfter) {
-            debugRoot(tree);
+            debug('Markdown Tree (after)', tree);
         }
 
     }

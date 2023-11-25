@@ -10,6 +10,7 @@
 * [Install](#install)
 * [Usage](#usage)
 * [Configuration](#configuration)
+* [Examples](#examples)
 * [Contributing](#contributing)
 * [Thanks](#thanks)
 * [License](#license)
@@ -111,6 +112,9 @@ export interface RemarkSvelteAutoImportOptions {
     /* alternatively/additionally provide a mapping between components and modules  */
     componentMap?      : {[component: string]: string};
 
+    /* mapping for local components (unless mapped in componentMap) */
+    localComponents?   : {[pathPrefix: string]: string};
+
 } /* ENDINTERFACE */
 ```
 
@@ -139,6 +143,58 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
 * __directories__ : string[] - A list of directories to parse for svelte components.
 * __patterns__ : string[] - A list of patterns to identify svelte components.  
 * __componentMap__ : {[component: string]: string} - A map that allows to specify the components and their respective modules. If you configure this by yourself you can use empty __directories__ and __patterns__. If you additionally scan for components this __componentMap__ will override the scanned settings.
+* __localComponents__ : {[pathPrefix: string]: string} - A map of path prefixes used to map the location of the components.
+
+
+## Examples
+
+If all components you are using are provided though npm dependencies you can just add the _node_modules_ directory to the configuration:
+
+```javascript
+const config = {
+    ...
+    directories         : [
+        'node_modules/'
+    ],
+    patterns            : [
+        '**/*.svelte'
+    ]
+    ...
+}
+```
+Let's say you have the component __Alert__ from the [flowbite svelte][flowbite-alert] this will cause
+an import such as this:
+
+```javascript
+<script>
+    import { Alert } from 'flowbite-svelte';
+</script>
+```
+
+However if you intend to use your own components you need to provide a corresponding mapping to refer
+to such a component. Let's say you have a component __Garlic__ within __src/lib/components/Garlic.svelte__ you to provide a corresponding path mapping such as this:
+
+```javascript
+const config = {
+    ...
+    localComponents: {
+        'src/lib': '$lib'
+    }
+    ...
+}
+```
+
+This causes the location __src/lib/components/Garlic.svelte__ to be mapped to __$lib/components/Garlic__ resulting in this script:
+
+```javascript
+<script>
+    import { Garlic } from '$lib/components/Garlic';
+</script>
+```
+
+
+
+
 
 
 ## Contributing
@@ -165,6 +221,7 @@ for me to react.
 [build]: https://github.com/kasisoft/remark-svelte-auto-import/actions
 [build-badge]: https://github.com/kasisoft/remark-svelte-auto-import/actions/workflows/rsai.yml/badge.svg
 [esmonly]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+[flowbite-alert]: https://flowbite-svelte.com/docs/components/alert
 [license]: https://github.com/kasisoft/remark-svelte-auto-import/blob/main/license
 [markdown]: https://markdown.de/
 [mdsvex]: https://mdsvex.com

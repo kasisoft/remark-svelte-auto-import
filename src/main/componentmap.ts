@@ -2,6 +2,7 @@ import glob from 'fast-glob';
 import path from 'path';
 import fs from 'fs';
 import { warn } from "./log";
+import { isImportedComponent, toComponentName } from './utils';
 
 type NullableString = string | null;
 
@@ -42,29 +43,32 @@ function cmFindPackageJson(dir: string): NullableString {
     return cmFindPackageJson(parent);
 }
 
-function cmListComponents(patterns: string[], dir: string, moduleMap: ModuleMap, componentMap: ComponentMap) {
-    glob.sync(patterns, {cwd: dir, onlyFiles: true, absolute: true}).forEach((location: string) => {
-        const packageJson = cmFindPackageJson(path.dirname(location));
+function cmListComponents(patterns: string[], dir: string, moduleMap: ModuleMap, componentMap: ComponentMap, localComponents: string[]) {
+   
+    const matchingFiles     = glob.sync(patterns, {cwd: dir, onlyFiles: true, absolute: true});
+    matchingFiles.filter(file => !isImportedComponent(file)).forEach(file => localComponents.push(file));
+   
+    const importCandidates  = matchingFiles.filter(file => isImportedComponent(file));
+    importCandidates.forEach(file => {
+        const packageJson = cmFindPackageJson(path.dirname(file));
         if (packageJson != null) {
-            const moduleName  = cmGetOrAddName(packageJson, moduleMap);
+            const moduleName = cmGetOrAddName(packageJson, moduleMap);
             if (moduleName != null) {
-                const basename = path.basename(location);
-                const lidx     = basename.lastIndexOf('.');
-                if (lidx != -1) {
-                    const componentName = basename.substring(0, lidx);
-                    componentMap[componentName] = moduleName;
-                }
+                const componentName = toComponentName(file);
+                componentMap[componentName] = moduleName;
             }
         }
     });
+    
 }
 
-export function cmBuildComponentMap(directories?: string[], patterns?: string[]): ComponentMap {
+export function cmBuildComponentMap(directories?: string[], patterns?: string[]): [ComponentMap, string[]] {
     if (directories && patterns) {
         const result    : ComponentMap = {};
         const moduleMap : ModuleMap    = {};
-        directories?.forEach(dir => cmListComponents(patterns as string[], dir, moduleMap, result));
-        return result;
+        const locals    : string[]     = [];
+        directories?.forEach(dir => cmListComponents(patterns as string[], dir, moduleMap, result, locals));
+        return [result, locals];
     }
-    return {};
+    return [{}, []];
 }
