@@ -1,6 +1,6 @@
 {
     "name": "@kasisoft/remark-svelte-auto-import",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Automatically imports svelte components used within a markdown file processed with MDSVEX/remark",
     "main": "lib/bundle.esm.js",
     "types": "lib/index.d.ts",
@@ -10,7 +10,7 @@
         "lib/index.d.ts"
     ],
     "scripts": {
-        "test": "ava",
+        "test": "NODE_OPTIONS='--loader=ts-node/esm --experimental-specifier-resolution=node' ava",
         "prepublish": "rollup -c"
     },
     "repository": {
@@ -58,10 +58,6 @@
         },
         "files": [
             "src/test/**/*.test.ts"
-        ],
-        "nodeArguments": [
-            "--loader=ts-node/esm",
-            "--experimental-specifier-resolution=node"
         ]
     }
 }
