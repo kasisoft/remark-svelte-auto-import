@@ -2,7 +2,7 @@ import { VFile } from 'vfile';
 import { Node, Parent } from 'unist';
 import path from 'path';
 
-import { warn, error, debugConfiguration, debugComponentMap, debug } from './log';
+import { warn, error, debug } from './log';
 import { imBuildImportText } from './importmap';
 import { cmBuildComponentMap } from './componentmap';
 import { auAppendScriptText, auGetOrCreateScriptNode } from './astutils';
@@ -45,6 +45,19 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
         '**/*.svelte'
     ]
 };
+
+function debugConfiguration(defaults: any, options: any, effective: any) {
+    debug("CONFIG :: Defaults:  ", defaults);
+    debug("CONFIG :: Provided:  ", options);
+    debug("CONFIG :: Effective: ", effective);
+}
+
+function debugComponentMap(scanned: any, local: any, config: any, effective: any) {
+    debug("COMPONENT MAP :: Scanned: ", scanned);
+    debug("COMPONENT MAP :: Local:   ", local);
+    debug("COMPONENT MAP :: Config:   ", config);
+    debug("COMPONENT MAP :: Effective:   ", effective);
+}
 
 function collectUsedTags(content: string, tags: string[]): string[] {
     return Array.from(new Set<string>(tags.filter(tag => containsTag(content, tag))));

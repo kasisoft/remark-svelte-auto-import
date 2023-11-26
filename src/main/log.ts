@@ -25,18 +25,3 @@ export function debug(msg: string, obj?: any) {
         log(chalk.blue(buildMsg(msg)));
     }
 }
-
-export function debugConfiguration(defaults: any, options: any, effective: any) {
-    debug('--- CONFIGURATION ---');
-    debug(":: Defaults:  " + JSON.stringify(defaults, null, 4));
-    debug(":: Provided:  " + JSON.stringify(options, null, 4));
-    debug(":: Effective: " + JSON.stringify(effective, null, 4));
-}
-
-export function debugComponentMap(scanned: any, local: any, config: any, effective: any) {
-    debug('--- COMPONENT MAP ---');
-    debug(":: Scanned: " + JSON.stringify(scanned, null, 4));
-    debug(":: Local:   " + JSON.stringify(local, null, 4));
-    debug(":: Config:   " + JSON.stringify(config, null, 4));
-    debug(":: Effective:   " + JSON.stringify(effective, null, 4));
-}
