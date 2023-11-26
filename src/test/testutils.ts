@@ -18,6 +18,7 @@ export function getResource(c: ExecutionContext, location: string): string {
     console.log(`__filename: '${__filename}'`);
     console.log(`__dirname: '${__dirname}'`);
     const result = path.join(DIR_RESOURCES, location);
+    console.log(`result: '${result}'`);
     c.is(fs.existsSync(result), true);
     return result;
 }
