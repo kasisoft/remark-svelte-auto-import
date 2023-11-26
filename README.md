@@ -77,7 +77,7 @@ pnpm install @kasisoft/remark-svelte-auto-import
             ...
         });
         ```
-    * with a configuration:
+    * with a configuration (note: each entry is a list here):
         ```js
         const myconfig = {...DEFAULT_OPTIONS, debugComponentMap: true};
         const config = defineConfig({
