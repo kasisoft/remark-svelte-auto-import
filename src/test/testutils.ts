@@ -13,6 +13,10 @@ const __dirname  = path.dirname(__filename);
 const DIR_RESOURCES = path.resolve(path.join(__dirname, 'resources'));
 
 export function getResource(c: ExecutionContext, location: string): string {
+    console.log(`location: '${location}'`);
+    console.log(`metaurl: '${import.meta.url}'`);
+    console.log(`__filename: '${__filename}'`);
+    console.log(`__dirname: '${__dirname}'`);
     const result = path.join(DIR_RESOURCES, location);
     c.is(fs.existsSync(result), true);
     return result;
