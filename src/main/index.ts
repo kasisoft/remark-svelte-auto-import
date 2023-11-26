@@ -10,12 +10,20 @@ import { containsTag, toComponentName, trailingSlash } from './utils';
 
 const NOP = function() {};
 
+export enum Debug {
+
+    None         = 0,
+    Default      = 1 << 0,
+    ComponentMap = 1 << 1,
+    RootBefore   = 1 << 2,
+    RootAfter    = 1 << 3,
+    All          = Default | ComponentMap | RootBefore | RootAfter
+
+} /* ENDENUM */
+
 export interface RemarkSvelteAutoImportOptions {
     
-    debug?             : boolean;
-    debugComponentMap? : boolean;
-    debugRootBefore?   : boolean;
-    debugRootAfter?    : boolean;
+    debug               : Debug;
     
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;
@@ -33,10 +41,7 @@ export interface RemarkSvelteAutoImportOptions {
 } /* ENDINTERFACE */
 
 export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
-    debug               : false,
-    debugComponentMap   : false,
-    debugRootBefore     : false,
-    debugRootAfter      : false,
+    debug               : Debug.None,
     scriptTS            : true,
     directories         : [
         'node_modules/'
@@ -130,10 +135,10 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
     const mappedLocals         = mapLocalComponents(scannedComponents[1], config.localComponents ?? {});
     const componentMap         = {...scannedComponents[0], ...mappedLocals, ...config.componentMap};
     
-    if (config.debug) {
+    if ((config.debug & Debug.Default) != 0) {
         debugConfiguration(DEFAULT_OPTIONS, options, config);
     }
-    if (config.debugComponentMap) {
+    if ((config.debug & Debug.ComponentMap) != 0) {
         debugComponentMap(scannedComponents, mappedLocals, config.componentMap, componentMap);
     }
 
@@ -147,7 +152,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
 
     return function (tree: Parent, file: VFile) {
 
-        if (config.debugRootBefore) {
+        if ((config.debug & Debug.RootBefore) != 0) {
             debug('Markdown Tree (before)', tree);
         }
 
@@ -177,7 +182,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         const scriptNode = auGetOrCreateScriptNode(tree, config.scriptTS ?? false);
         auAppendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
 
-        if (config.debugRootAfter) {
+        if ((config.debug & Debug.RootAfter) != 0) {
             debug('Markdown Tree (after)', tree);
         }
 

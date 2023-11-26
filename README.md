@@ -97,10 +97,7 @@ __RemarkSvelteAutoImportOptions__ is defined as followed:
 ```typescript
 export interface RemarkSvelteAutoImportOptions {
     
-    debug?             : boolean;
-    debugComponentMap? : boolean;
-    debugRootBefore?   : boolean;
-    debugRootAfter?    : boolean;
+    debug              : Debug; /* Debug.{None, Default, ComponentMap, RootBefore, RootAfter} */
     
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;
@@ -122,10 +119,7 @@ You can import import the default settings __DEFAULT_OPTIONS__ with the followin
 
 ```typescript
 export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
-    debug               : false,
-    debugComponentMap   : false,
-    debugRootBefore     : false,
-    debugRootAfter      : false,
+    debug               : Debug.None,
     scriptTS            : true,
     directories         : [
         'node_modules/'
@@ -135,7 +129,13 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
     ]
 };
 ```
-* __debug__ : boolean - Enable debug messages in general.
+* __debug__ : Debug - Combine flags of __Debug__ in order to generate debug statements:
+  * Debug.None: no output (just a convenience value)
+  * Debug.Default: some basic output
+  * Debug.ComponentMap: prints out the component map configuration identified through the transformation process
+  * Debug.RootBefore: prints the ast before the transformation
+  * Debug.RootAfter: prints the ast after the transformation
+  * Debug.All: enables all outputs (convenience value)
 * __debugComponentMap__ : boolean - Print out information of the identified components. Be aware that depending on your project this might be a big map which will be printed as a JSON string.
 * __debugRootBefore__ : boolean - Prints the root node before the transformation takes place.
 * __debugRootAfter__ : boolean - Prints the root node after the transformation successfully took place.
@@ -191,11 +191,6 @@ This causes the location __src/lib/components/Garlic.svelte__ to be mapped to __
     import { Garlic } from '$lib/components/Garlic';
 </script>
 ```
-
-
-
-
-
 
 ## Contributing
 
