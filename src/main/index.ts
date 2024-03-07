@@ -2,7 +2,7 @@ import { VFile } from 'vfile';
 import { Parent } from 'unist';
 import path from 'path';
 
-import { warn, error, debug } from '$main/log';
+import { warn, error, debug, debugConfiguration } from '$main/log';
 import { imBuildImportText } from '$main/importmap';
 import { cmBuildComponentMap } from '$main/componentmap';
 import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
@@ -22,12 +22,6 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
         '**/*.svelte'
     ]
 };
-
-function debugConfiguration(defaults: any, options: any, effective: any) {
-    debug("CONFIG :: Defaults:  ", defaults);
-    debug("CONFIG :: Provided:  ", options);
-    debug("CONFIG :: Effective: ", effective);
-}
 
 function debugComponentMap(scanned: any, local: any, config: any, effective: any) {
     debug("COMPONENT MAP :: Scanned: ", scanned);
