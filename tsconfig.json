@@ -17,11 +17,12 @@
             ]
         },
         "esModuleInterop": true,
+        "emitDeclarationOnly": false,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
         "outDir": "lib",
         "sourceMap": true,
-        "declaration": true,
+        "declaration": false,
     },
     "include": [
         "src/**/*.ts"
