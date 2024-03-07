@@ -10,9 +10,6 @@ export default {
             sourcemap: "inline"
         }
     ],
-    external: [
-        "unist-util-visit", "path", "fs", "fast-glob", "chalk", "unified"
-    ],
     plugins: [
         resolve(),
         typescript({ "tsconfig": "./tsconfig.json", "filterRoot": "src/main" })
