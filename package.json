@@ -1,6 +1,6 @@
 {
     "name": "@kasisoft/remark-svelte-auto-import",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Automatically imports svelte components used within a markdown file processed with MDSVEX/remark",
     "main": "lib/bundle.esm.js",
     "types": "lib/index.d.ts",
@@ -16,8 +16,10 @@
         "README.md"
     ],
     "scripts": {
-        "test": "NODE_OPTIONS='--loader=ts-node/esm --experimental-specifier-resolution=node' ava",
-        "prepublish": "rollup -c"
+        "prepare": "mkdir -p lib && cp -f src/main/index.d.ts lib/index.d.ts",
+        "prepack": "rollup -c",
+        "pack": "pnpm pack",
+        "test": "vitest run"
     },
     "repository": {
         "type": "git",
@@ -36,15 +38,13 @@
     "author": "Daniel Kasmeroglu",
     "license": "MIT",
     "devDependencies": {
-        "@ava/typescript": "^4.1.0",
         "@rollup/plugin-alias": "^5.1.0",
         "@rollup/plugin-commonjs": "^25.0.7",
         "@rollup/plugin-node-resolve": "^15.2.3",
-        "@rollup/plugin-typescript": "^11.1.5",
+        "@rollup/plugin-typescript": "^11.1.6",
         "@types/node": "^20.10.0",
         "@types/unist": "^3.0.2",
         "arktype": "1.0.29-alpha",
-        "ava": "^5.3.1",
         "chalk": "^5.3.0",
         "fast-glob": "^3.3.2",
         "remark": "^15.0.1",
@@ -52,19 +52,12 @@
         "remark-parse": "^11.0.0",
         "remark-stringify": "^11.0.0",
         "rollup": "^4.12.0",
-        "ts-node": "^10.9.1",
         "tslib": "^2.6.2",
         "typescript": "^5.3.2",
         "unified": "^11.0.4",
         "unist-util-visit": "^5.0.0",
-        "vfile": "^6.0.1"
-    },
-    "ava": {
-        "extensions": {
-            "ts": "module"
-        },
-        "files": [
-            "src/test/**/*.test.ts"
-        ]
+        "vfile": "^6.0.1",
+        "vite": "^5.1.5",
+        "vitest": "^1.3.1"
     }
 }
