@@ -1,7 +1,7 @@
 import { Literal, Node, Parent } from 'unist';
 import { EXIT, visit } from 'unist-util-visit';
 
-type NullableLiteral = Literal | null;
+import { NullableLiteral } from '$main/datatypes';
 
 export function locateFrontmatterNode(tree: Node): NullableLiteral {
 

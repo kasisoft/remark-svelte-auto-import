@@ -1,3 +1,19 @@
+import { Literal } from 'unist';
+
+export type NullableString = string | null;
+
+export type NullableLiteral = Literal | null;
+
+// component name => module name
+export type ComponentMap = {[component: string]: string};
+
+// package.json path => extracted package name or null
+export type ModuleMap    = {[packageFile: string]: NullableString};
+
+// module name => list of component names
+export type ImportMap = {[module: string]: string[]};
+
+
 export enum Debug {
     None         = 0,
     Default      = 1 << 0,
@@ -25,6 +41,7 @@ function parseDebug(val: any): number {
     // we know from arktype that it's a number
     return val as number;
 }
+
 export interface RemarkSvelteAutoImportOptions {
 
     debug               : Debug;

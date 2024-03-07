@@ -1,11 +1,10 @@
 import { VFile } from 'vfile';
 import { Parent } from 'unist';
 
-import { RemarkSvelteAutoImportOptions } from '$main/datatypes';
+import { ComponentMap, RemarkSvelteAutoImportOptions } from '$main/datatypes';
 import { containsTag } from '$main/utils';
 import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
 import { imBuildImportText } from '$main/importmap';
-import { ComponentMap } from '$main/componentmap';
 
 function collectUsedTags(content: string, tags: string[]): string[] {
     return Array.from(new Set<string>(tags.filter(tag => containsTag(content, tag))));

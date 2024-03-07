@@ -1,16 +1,10 @@
 import glob from 'fast-glob';
 import path from 'path';
 import fs from 'fs';
-import { warn } from "./log";
-import { isImportedComponent, toComponentName } from './utils';
 
-type NullableString = string | null;
-
-// component name => module name
-export type ComponentMap = {[component: string]: string};
-
-// package.json path => extracted package name or null
-type ModuleMap    = {[packageFile: string]: NullableString};
+import { warn } from '$main/log';
+import { isImportedComponent, toComponentName } from '$main/utils';
+import { ModuleMap, NullableString } from '$main/datatypes';
 
 function cmReadJson(file: string): any {
     try {

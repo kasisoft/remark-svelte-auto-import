@@ -1,9 +1,7 @@
 import path from 'path';
 
-import { joinStrings } from './utils';
-
-// module name => list of component names
-type ImportMap = {[module: string]: string[]};
+import { joinStrings } from '$main/utils';
+import { ImportMap } from '$main/datatypes';
 
 function imSetOrExtend(imports: ImportMap, module: string, component: string) {
     if (imports[module]) {
@@ -18,14 +16,14 @@ function imBuildImportLine(module: string, components: string[]): string {
     // a default import is indicated by the suffix (typically .svelte)
     /** @todo [26-NOV-2023:KASI]   Should we check for a 'export default' string instead? */
     const defaultImport = path.basename(module).lastIndexOf('.') != -1;
-    
+
     const listed        = joinStrings(components.sort());
     if (defaultImport && (components.length == 1)) {
         return `import ${listed} from '${module}';\n`;
     } else {
         return `import { ${listed} } from '${module}';\n`;
     }
-    
+
 }
 
 export function imBuildImportText(componentMap: {[component: string]: string}, usedComponents: string[]): string {
