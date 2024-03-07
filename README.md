@@ -19,8 +19,8 @@
 ## What is this?
 
 This plugin is part of the [remark] plugin infrastructure and meant to be used in conjunction with [mdsvex].
-_mdsvex_ allows to use [Markdown] to write your pages within the [Svelte] framework. 
-Obviously it's nice to use components within these _Markdown_ files which is support but requires to add the corresponding import into the _Markdown_ file.
+_mdsvex_ allows to use [Markdown] to write your pages within the [Svelte] framework.
+Obviously it's nice to use components within these _Markdown_ files which is supported but requires to add the corresponding import within the _Markdown_ file.
 For instance:
 
 ```html
@@ -35,7 +35,7 @@ Here is my Chart:
 ```
 
 Though feasible the __script__ tag is somewhat annoying here as it's only reason for existence is to satisfy technical requirements.
-This is where this plugin __remark-svelte-auto-import__ comests into action. 
+This is where this plugin __remark-svelte-auto-import__ comes into action.
 It integrates with the _remark_ infrastructure and generates these imports.
 Using it would change the above section to this one:
 
@@ -96,16 +96,17 @@ __RemarkSvelteAutoImportOptions__ is defined as followed:
 
 ```typescript
 export interface RemarkSvelteAutoImportOptions {
-    
-    debug              : Debug; /* Debug.{None, Default, ComponentMap, RootBefore, RootAfter} */
-    
+
+    /* Debug.{None, Default, RootBefore, RootAfter, ScriptBefore, ScriptAfter, ComponentMap} */
+    debug              : Debug;
+
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;
 
     /* scan for components */
     directories?       : string[];
     patterns?          : string[];
-    
+
     /* alternatively/additionally provide a mapping between components and modules  */
     componentMap?      : {[component: string]: string};
 
@@ -115,9 +116,12 @@ export interface RemarkSvelteAutoImportOptions {
 } /* ENDINTERFACE */
 ```
 
-You can import import the default settings __DEFAULT_OPTIONS__ with the following setup:
+You can import the default settings __DEFAULT_OPTIONS__ with the following setup:
 
 ```typescript
+import { DEFAULT_OPTIONS } from '@kasisoft/remark-svelte-auto-import';
+
+# which would include this block:
 export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
     debug               : Debug.None,
     scriptTS            : true,
@@ -132,21 +136,29 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
 * __debug__ : Debug - Combine flags of __Debug__ in order to generate debug statements:
   * Debug.None: no output (just a convenience value)
   * Debug.Default: some basic output
-  * Debug.ComponentMap: prints out the component map configuration identified through the transformation process
   * Debug.RootBefore: prints the ast before the transformation
   * Debug.RootAfter: prints the ast after the transformation
+  * Debug.ScriptBefore: prints the script node before the transformation
+  * Debug.ScriptAfter: prints the script node after the transformation
+  * Debug.ComponentMap: prints out the component map configuration identified through the transformation process
   * Debug.All: enables all outputs (convenience value)
 * __debugComponentMap__ : boolean - Print out information of the identified components. Be aware that depending on your project this might be a big map which will be printed as a JSON string.
 * __debugRootBefore__ : boolean - Prints the root node before the transformation takes place.
 * __debugRootAfter__ : boolean - Prints the root node after the transformation successfully took place.
 * __scriptTS__ : boolean - By default a ```lang="ts"``` will be added to each create __script__ tag. If set to __false__ this won't happen.
 * __directories__ : string[] - A list of directories to parse for svelte components.
-* __patterns__ : string[] - A list of patterns to identify svelte components.  
+* __patterns__ : string[] - A list of patterns to identify svelte components.
 * __componentMap__ : {[component: string]: string} - A map that allows to specify the components and their respective modules. If you configure this by yourself you can use empty __directories__ and __patterns__. If you additionally scan for components this __componentMap__ will override the scanned settings.
 * __localComponents__ : {[pathPrefix: string]: string} - A map of path prefixes used to map the location of the components.
 
 
 ## Examples
+
+I'm using this plugin in the following example project: [remark-image-tools](https://github.com/kasisoft/remark-imagetools-example) so you get a working example out of the box (look for the component __Example__).
+
+Here are some basic scenarios as well:
+
+### Only imported components
 
 If all components you are using are provided though npm dependencies you can just add the _node_modules_ directory to the configuration:
 
@@ -170,6 +182,8 @@ an import such as this:
     import { Alert } from 'flowbite-svelte';
 </script>
 ```
+
+### With custom written components
 
 However if you intend to use your own components you need to provide a corresponding mapping to refer
 to such a component. Let's say you have a component __Garlic__ within __src/lib/components/Garlic.svelte__ you to provide a corresponding path mapping such as this:

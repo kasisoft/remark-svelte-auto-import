@@ -12,7 +12,7 @@ import { pluginImpl } from './remarksvelteautoimport';
 
 const NOP = function() {};
 
-const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
+export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
     debug               : Debug.None,
     scriptTS            : true,
     directories         : [
