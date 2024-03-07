@@ -1,7 +1,7 @@
-import test from 'ava';
+import { expect, test } from 'vitest';
 
-import { cmBuildComponentMap } from '../main/componentmap';
-import { getResource } from './testutils';
+import { cmBuildComponentMap } from '$main/componentmap';
+import { getResource } from '$test/testutils';
 
 const TESTS_BUILD_COMPONENT_MAP = [
     { directories: undefined, patterns: undefined, expected: {} },
@@ -16,9 +16,9 @@ const TESTS_BUILD_COMPONENT_MAP = [
 ];
 
 for (const tc of TESTS_BUILD_COMPONENT_MAP) {
-    test(`cmBuildComponentMap(${tc.directories}, ${tc.patterns})`, t => {
-        const dirs = tc.directories?.map(dir => getResource(t, dir));
+    test(`cmBuildComponentMap(${tc.directories}, ${tc.patterns})`, () => {
+        const dirs = tc.directories?.map(dir => getResource(dir));
         const map  = cmBuildComponentMap(dirs, tc.patterns)[0];
-        t.deepEqual(map, tc.expected);
+        expect(map).toStrictEqual(tc.expected);
     });
 }

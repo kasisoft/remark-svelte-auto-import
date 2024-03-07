@@ -1,4 +1,4 @@
-import test from 'ava';
+import { expect, test } from 'vitest';
 
 import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
 import { parseMarkdown } from '$test/testutils';
@@ -18,10 +18,10 @@ const TESTS_GET_OR_CREATE_SCRIPT = [
 ];
 
 for (const tc of TESTS_GET_OR_CREATE_SCRIPT) {
-    test(`getOrCreateScriptNode(${tc.location}, ts: ${tc.ts})`, t => {
-        const tree       = parseMarkdown(t, `astutils/${tc.location}`);
+    test(`getOrCreateScriptNode(${tc.location}, ts: ${tc.ts})`, () => {
+        const tree       = parseMarkdown(`astutils/${tc.location}`);
         const scriptNode = getOrCreateScriptNode(tree, tc.ts);
-        t.is((scriptNode.value as string).trim(), tc.expected);
+        expect((scriptNode.value as string).trim()).toBe(tc.expected);
     });
 }
 
@@ -36,10 +36,10 @@ const TESTS_APPEND_SCRIPT_TEXT = [
 ];
 
 for (const tc of TESTS_APPEND_SCRIPT_TEXT) {
-    test(`appendScriptText(${tc.location}, ${tc.text}, ${tc.ts})`, t => {
-        const tree       = parseMarkdown(t, `astutils/${tc.location}`);
+    test(`appendScriptText(${tc.location}, ${tc.text}, ${tc.ts})`, () => {
+        const tree       = parseMarkdown(`astutils/${tc.location}`);
         const scriptNode = getOrCreateScriptNode(tree, tc.ts);
         appendScriptText(scriptNode, tc.text);
-        t.is((scriptNode.value as string).trim(), tc.expected);
+        expect((scriptNode.value as string).trim()).toBe(tc.expected);
     });
 }

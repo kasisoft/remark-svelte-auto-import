@@ -1,13 +1,25 @@
+import { expect, test } from 'vitest';
 import { unified } from 'unified'
 
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkStringify from 'remark-stringify';
 import parse from 'remark-parse'
-import test, { ExecutionContext } from 'ava';
 import fs from 'fs';
 
-import { DEFAULT_OPTIONS, RemarkSvelteAutoImportOptions, remarkSvelteAutoImport } from '../main';
-import { getResource } from './testutils';
+import { remarkSvelteAutoImport } from '$main/index';
+import { Debug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
+import { getResource } from '$test/testutils';
+
+const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
+    debug               : Debug.None,
+    scriptTS            : true,
+    directories         : [
+        'node_modules/'
+    ],
+    patterns            : [
+        '**/*.svelte'
+    ]
+};
 
 const COMPONENT_MAP = {
     'Gollum': 'dodo',
@@ -15,8 +27,8 @@ const COMPONENT_MAP = {
 };
 
 // returns the script tag and it's content
-function runTransformer(t: ExecutionContext, location: string, config: RemarkSvelteAutoImportOptions): string {
-    const mdfile      = getResource(t, location);
+function runTransformer(location: string, config: RemarkSvelteAutoImportOptions): string {
+    const mdfile      = getResource(location);
     const fileContent = fs.readFileSync(mdfile, 'utf-8');
     const vfile = unified()
         .use(parse)
@@ -64,10 +76,10 @@ const TESTS_TRANSFORMER_NO_CHANGES = [
 ];
 
 for (const tc of TESTS_TRANSFORMER_NO_CHANGES) {
-    test(`no insertions(${tc.input}, ${tc.ts})`, t => {
+    test(`no insertions(${tc.input}, ${tc.ts})`, () => {
         const config = cfg(tc.ts);
-        const value  = runTransformer(t, tc.input, config);
-        t.is(value, '');
+        const value  = runTransformer(tc.input, config);
+        expect(value).toBe('');
     });
 }
 
@@ -79,10 +91,10 @@ const TESTS_TRANSFORMER = [
 ];
 
 for (const tc of TESTS_TRANSFORMER) {
-    test(`with insertion(${tc.input}, ${tc.ts})`, t => {
+    test(`with insertion(${tc.input}, ${tc.ts})`, () => {
         const config = cfg(tc.ts, COMPONENT_MAP, []);
-        const value  = runTransformer(t, tc.input, config);
-        t.is(value, tc.expected);
+        const value  = runTransformer(tc.input, config);
+        expect(value).toBe(tc.expected);
     });
 }
 
@@ -94,11 +106,11 @@ const TESTS_TRANSFORMER_NODE_MODULES = [
 ];
 
 for (const tc of TESTS_TRANSFORMER_NODE_MODULES) {
-    test(`transformer with node_modules(${tc.input}, ${tc.ts})`, t => {
-        const dirs   = [getResource(t, 'transformer/node_modules')];
+    test(`transformer with node_modules(${tc.input}, ${tc.ts})`, () => {
+        const dirs   = [getResource('transformer/node_modules')];
         const config = cfg(tc.ts, {}, dirs);
-        const value  = runTransformer(t, tc.input, config);
-        t.is(value, tc.expected);
+        const value  = runTransformer(tc.input, config);
+        expect(value).toBe(tc.expected);
     });
 }
 
@@ -111,11 +123,11 @@ for (const tc of TESTS_TRANSFORMER_LOCALS) {
     const locals = {
         'src/test/resources/transformer/local': '$lib/local/'
     };
-    test(`transformer with node_modules, locals(${tc.input}, ${tc.ts})`, t => {
-        const dirs   = [ getResource(t, 'transformer/local'), getResource(t, 'transformer/node_modules') ];
+    test(`transformer with node_modules, locals(${tc.input}, ${tc.ts})`, () => {
+        const dirs   = [ getResource('transformer/local'), getResource('transformer/node_modules') ];
         const config = cfg(tc.ts, {}, dirs, locals);
-        const value  = runTransformer(t, tc.input, config);
-        t.is(value, tc.expected);
+        const value  = runTransformer(tc.input, config);
+        expect(value).toBe(tc.expected);
     });
 }
 
@@ -128,11 +140,11 @@ for (const tc of TESTS_TRANSFORMER_LOCALS_OVERRIDE) {
     const locals = {
         'src/test/resources/transformer/local': '$lib/local/'
     };
-    test(`transformer with node_modules, locals and config(${tc.input}, ${tc.ts})`, t => {
-        const dirs   = [ getResource(t, 'transformer/local'), getResource(t, 'transformer/node_modules') ];
+    test(`transformer with node_modules, locals and config(${tc.input}, ${tc.ts})`, () => {
+        const dirs   = [ getResource('transformer/local'), getResource('transformer/node_modules') ];
         const cm     = { 'Elephant': '@animals' };
         const config = cfg(tc.ts, cm, dirs, locals);
-        const value  = runTransformer(t, tc.input, config);
-        t.is(value, tc.expected);
+        const value  = runTransformer(tc.input, config);
+        expect(value).toBe(tc.expected);
     });
 }

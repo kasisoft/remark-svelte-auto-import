@@ -4,7 +4,7 @@ import fs from 'fs';
 
 import { warn } from '$main/log';
 import { isImportedComponent, toComponentName } from '$main/utils';
-import { ModuleMap, NullableString } from '$main/datatypes';
+import { ComponentMap, ModuleMap, NullableString } from '$main/datatypes';
 
 function cmReadJson(file: string): any {
     try {
