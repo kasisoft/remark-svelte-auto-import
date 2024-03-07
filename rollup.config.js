@@ -1,6 +1,7 @@
 import resolve from '@rollup/plugin-node-resolve';
 import alias from '@rollup/plugin-alias';
 import typescript from '@rollup/plugin-typescript';
+import commonjs from '@rollup/plugin-commonjs';
 
 export default [
     {
@@ -20,7 +21,8 @@ export default [
                 ]
             }),
             resolve(),
-            typescript({ "tsconfig": "./tsconfig.json", "filterRoot": "src/main" })
+            typescript({ "tsconfig": "./tsconfig.json", "filterRoot": "src/main" }),
+            commonjs()
         ],
     },
 ];
