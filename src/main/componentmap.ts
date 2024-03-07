@@ -7,7 +7,7 @@ import { isImportedComponent, toComponentName } from './utils';
 type NullableString = string | null;
 
 // component name => module name
-type ComponentMap = {[component: string]: string};
+export type ComponentMap = {[component: string]: string};
 
 // package.json path => extracted package name or null
 type ModuleMap    = {[packageFile: string]: NullableString};
@@ -15,7 +15,7 @@ type ModuleMap    = {[packageFile: string]: NullableString};
 function cmReadJson(file: string): any {
     try {
         const fileContent = fs.readFileSync(file, 'utf-8');
-        return JSON.parse(fileContent);   
+        return JSON.parse(fileContent);
     } catch (err) {
         warn(`Failed to load the package declaration in '${file} !`);
         return {};
@@ -44,10 +44,10 @@ function cmFindPackageJson(dir: string): NullableString {
 }
 
 function cmListComponents(patterns: string[], dir: string, moduleMap: ModuleMap, componentMap: ComponentMap, localComponents: string[]) {
-   
+
     const matchingFiles     = glob.sync(patterns, {cwd: dir, onlyFiles: true, absolute: true});
     matchingFiles.filter(file => !isImportedComponent(file)).forEach(file => localComponents.push(file));
-   
+
     const importCandidates  = matchingFiles.filter(file => isImportedComponent(file));
     importCandidates.forEach(file => {
         const packageJson = cmFindPackageJson(path.dirname(file));
@@ -59,7 +59,7 @@ function cmListComponents(patterns: string[], dir: string, moduleMap: ModuleMap,
             }
         }
     });
-    
+
 }
 
 export function cmBuildComponentMap(directories?: string[], patterns?: string[]): [ComponentMap, string[]] {

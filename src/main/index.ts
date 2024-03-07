@@ -3,16 +3,16 @@ import { Parent } from 'unist';
 import path from 'path';
 
 import { warn, error, debug, debugConfiguration } from '$main/log';
-import { imBuildImportText } from '$main/importmap';
 import { cmBuildComponentMap } from '$main/componentmap';
-import { appendScriptText, getOrCreateScriptNode, locateScriptNode } from '$main/astutils';
-import { containsTag, toComponentName, trailingSlash } from '$main/utils';
+import { locateScriptNode } from '$main/astutils';
+import { toComponentName, trailingSlash } from '$main/utils';
 import { Debug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
+import { pluginImpl } from './remarksvelteautoimport';
 
 
 const NOP = function() {};
 
-export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
+const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
     debug               : Debug.None,
     scriptTS            : true,
     directories         : [
@@ -28,10 +28,6 @@ function debugComponentMap(scanned: any, local: any, config: any, effective: any
     debug("COMPONENT MAP :: Local:   ", local);
     debug("COMPONENT MAP :: Config:   ", config);
     debug("COMPONENT MAP :: Effective:   ", effective);
-}
-
-function collectUsedTags(content: string, tags: string[]): string[] {
-    return Array.from(new Set<string>(tags.filter(tag => containsTag(content, tag))));
 }
 
 function hasScanningSettings(config: RemarkSvelteAutoImportOptions): boolean {
@@ -85,6 +81,7 @@ function mapLocalComponents(locals: string[], prefixMapping: {[prefix: string]: 
     return result;
 }
 
+
 // https://unifiedjs.com/learn/guide/create-a-plugin/
 export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = DEFAULT_OPTIONS) {
 
@@ -114,8 +111,6 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         return NOP;
     }
 
-    const componentTags = Object.keys(componentMap);
-
     function logBefore(config: RemarkSvelteAutoImportOptions, tree: Parent) {
         if ((config.debug & Debug.RootBefore) != 0) {
             debug('Markdown Tree (before)', tree);
@@ -136,37 +131,9 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
     }
 
     return function (tree: Parent, file: VFile) {
-
         logBefore(config, tree);
-
-        /**
-         * @todo [24-NOV-2023:KASI]   Figure out a proper way to access the textual
-         *                            content. I might not have a grasp yet on the
-         *                            remark/unified infrastructure though this
-         *                            seems to work fine for now.
-         */
-        let content = '';
-        if (file.hasOwnProperty('contents')) {
-            content = (file as any)['contents'];
-        } else if (file.hasOwnProperty('value')) {
-            content = file.value as string;
-        }
-
-        if (content.length == 0) {
-            return;
-        }
-
-        const usedComponents = collectUsedTags(content, componentTags);
-        if (usedComponents.length == 0) {
-            // none of our registered components is being used, so no changes necessary
-            return;
-        }
-
-        const scriptNode = getOrCreateScriptNode(tree, config.scriptTS ?? false);
-        appendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
-
+        pluginImpl(config, tree, file, componentMap);
         logAfter(config, tree);
-
     }
 
 }
