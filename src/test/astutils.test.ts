@@ -1,8 +1,7 @@
 import test from 'ava';
 
-import { auAppendScriptText, auGetOrCreateScriptNode } from '../main/astutils';
-import { parseMarkdown } from './testutils';
-
+import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
+import { parseMarkdown } from '$test/testutils';
 
 const TESTS_GET_OR_CREATE_SCRIPT = [
     
@@ -19,9 +18,9 @@ const TESTS_GET_OR_CREATE_SCRIPT = [
 ];
 
 for (const tc of TESTS_GET_OR_CREATE_SCRIPT) {
-    test(`auGetOrCreateScriptNode(${tc.location}, ts: ${tc.ts})`, t => {
+    test(`getOrCreateScriptNode(${tc.location}, ts: ${tc.ts})`, t => {
         const tree       = parseMarkdown(t, `astutils/${tc.location}`);
-        const scriptNode = auGetOrCreateScriptNode(tree, tc.ts);
+        const scriptNode = getOrCreateScriptNode(tree, tc.ts);
         t.is((scriptNode.value as string).trim(), tc.expected);
     });
 }
@@ -37,10 +36,10 @@ const TESTS_APPEND_SCRIPT_TEXT = [
 ];
 
 for (const tc of TESTS_APPEND_SCRIPT_TEXT) {
-    test(`auAppendScriptText(${tc.location}, ${tc.text}, ${tc.ts})`, t => {
+    test(`appendScriptText(${tc.location}, ${tc.text}, ${tc.ts})`, t => {
         const tree       = parseMarkdown(t, `astutils/${tc.location}`);
-        const scriptNode = auGetOrCreateScriptNode(tree, tc.ts);
-        auAppendScriptText(scriptNode, tc.text);
+        const scriptNode = getOrCreateScriptNode(tree, tc.ts);
+        appendScriptText(scriptNode, tc.text);
         t.is((scriptNode.value as string).trim(), tc.expected);
     });
 }

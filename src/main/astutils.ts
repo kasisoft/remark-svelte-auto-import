@@ -1,9 +1,9 @@
-import { Literal, Node, Parent } from "unist";
-import { EXIT, visit } from "unist-util-visit";
+import { Literal, Node, Parent } from 'unist';
+import { EXIT, visit } from 'unist-util-visit';
 
 type NullableLiteral = Literal | null;
 
-function auLocateFrontmatterNode(tree: Node): NullableLiteral {
+export function locateFrontmatterNode(tree: Node): NullableLiteral {
 
     let result: NullableLiteral = null;
     visit(tree, 'yaml', findFrontmatterNode);
@@ -16,7 +16,7 @@ function auLocateFrontmatterNode(tree: Node): NullableLiteral {
 
 }
 
-export function auLocateScriptNode(tree: Node): NullableLiteral {
+export function locateScriptNode(tree: Node): NullableLiteral {
 
     let result: NullableLiteral = null;
     visit(tree, 'html', findScriptNode);
@@ -31,9 +31,9 @@ export function auLocateScriptNode(tree: Node): NullableLiteral {
 
 }
 
-export function auGetOrCreateScriptNode(tree: Parent, ts: boolean): Literal {
+export function getOrCreateScriptNode(tree: Parent, ts: boolean): Literal {
 
-    let result = auLocateScriptNode(tree);
+    let result = locateScriptNode(tree);
     if (result != null) {
         return result;
     }
@@ -41,7 +41,7 @@ export function auGetOrCreateScriptNode(tree: Parent, ts: boolean): Literal {
     const langAttr = ts ? ' lang="ts"' : '';
     result = { type: 'html', value: '<script' + langAttr + '></script>' };
 
-    const frontMatterNode = auLocateFrontmatterNode(tree);
+    const frontMatterNode = locateFrontmatterNode(tree);
     if (frontMatterNode) {
         const index   = tree.children.indexOf(frontMatterNode) + 1;
         tree.children = tree.children.slice(0, index).concat([result]).concat(tree.children.slice(index));
@@ -53,7 +53,7 @@ export function auGetOrCreateScriptNode(tree: Parent, ts: boolean): Literal {
 
 }
 
-export function auAppendScriptText(scriptNode: Literal, text: string) {
+export function appendScriptText(scriptNode: Literal, text: string) {
 
     const scriptText = scriptNode.value as string;
     const closing    = scriptText.lastIndexOf('</script>');

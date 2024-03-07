@@ -5,7 +5,7 @@ import path from 'path';
 import { warn, error, debug } from './log';
 import { imBuildImportText } from './importmap';
 import { cmBuildComponentMap } from './componentmap';
-import { auAppendScriptText, auGetOrCreateScriptNode } from './astutils';
+import { appendScriptText, getOrCreateScriptNode } from './astutils';
 import { containsTag, toComponentName, trailingSlash } from './utils';
 
 const NOP = function() {};
@@ -22,16 +22,16 @@ export enum Debug {
 } /* ENDENUM */
 
 export interface RemarkSvelteAutoImportOptions {
-    
+
     debug               : Debug;
-    
+
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;
 
     /* scan for components */
     directories?       : string[];
     patterns?          : string[];
-    
+
     /* alternatively/additionally provide a mapping between components and modules  */
     componentMap?      : {[component: string]: string};
 
@@ -82,7 +82,7 @@ function hasComponentMap(config: RemarkSvelteAutoImportOptions): boolean {
     return false;
 }
 
-// replicates the supplied mapping while resolving the keys and grating 
+// replicates the supplied mapping while resolving the keys and grating
 // trailing slashes for keys and values
 function resolveKeyPathes(prefixMapping: {[fspath: string]: string}): {[fspath: string]: string} {
     const result: {[fspath: string]: string} =  {};
@@ -134,7 +134,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
     const scannedComponents    = cmBuildComponentMap(config.directories, config.patterns);
     const mappedLocals         = mapLocalComponents(scannedComponents[1], config.localComponents ?? {});
     const componentMap         = {...scannedComponents[0], ...mappedLocals, ...config.componentMap};
-    
+
     if ((config.debug & Debug.Default) != 0) {
         debugConfiguration(DEFAULT_OPTIONS, options, config);
     }
@@ -156,8 +156,8 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
             debug('Markdown Tree (before)', tree);
         }
 
-        /** 
-         * @todo [24-NOV-2023:KASI]   Figure out a proper way to access the textual 
+        /**
+         * @todo [24-NOV-2023:KASI]   Figure out a proper way to access the textual
          *                            content. I might not have a grasp yet on the
          *                            remark/unified infrastructure though this
          *                            seems to work fine for now.
@@ -168,7 +168,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         } else if (file.hasOwnProperty('value')) {
             content = file.value as string;
         }
-        
+
         if (content.length == 0) {
             return;
         }
@@ -179,8 +179,8 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
             return;
         }
 
-        const scriptNode = auGetOrCreateScriptNode(tree, config.scriptTS ?? false);
-        auAppendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
+        const scriptNode = getOrCreateScriptNode(tree, config.scriptTS ?? false);
+        appendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
 
         if ((config.debug & Debug.RootAfter) != 0) {
             debug('Markdown Tree (after)', tree);
