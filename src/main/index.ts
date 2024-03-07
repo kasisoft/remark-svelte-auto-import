@@ -2,11 +2,11 @@ import { VFile } from 'vfile';
 import { Parent } from 'unist';
 import path from 'path';
 
-import { warn, error, debug } from './log';
-import { imBuildImportText } from './importmap';
-import { cmBuildComponentMap } from './componentmap';
-import { appendScriptText, getOrCreateScriptNode } from './astutils';
-import { containsTag, toComponentName, trailingSlash } from './utils';
+import { warn, error, debug } from '$main/log';
+import { imBuildImportText } from '$main/importmap';
+import { cmBuildComponentMap } from '$main/componentmap';
+import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
+import { containsTag, toComponentName, trailingSlash } from '$main/utils';
 import { Debug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
 
 
