@@ -5,9 +5,15 @@
     "main": "lib/bundle.esm.js",
     "types": "lib/index.d.ts",
     "type": "module",
+    "engines": {
+        "node": ">=18.0.0",
+        "pnpm": ">=8.15.0"
+    },
     "files": [
         "lib/bundle.esm.js",
-        "lib/index.d.ts"
+        "lib/index.d.ts",
+        "LICENSE",
+        "README.md"
     ],
     "scripts": {
         "test": "NODE_OPTIONS='--loader=ts-node/esm --experimental-specifier-resolution=node' ava",
