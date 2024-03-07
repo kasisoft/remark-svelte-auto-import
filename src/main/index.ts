@@ -5,7 +5,7 @@ import path from 'path';
 import { warn, error, debug, debugConfiguration } from '$main/log';
 import { imBuildImportText } from '$main/importmap';
 import { cmBuildComponentMap } from '$main/componentmap';
-import { appendScriptText, getOrCreateScriptNode } from '$main/astutils';
+import { appendScriptText, getOrCreateScriptNode, locateScriptNode } from '$main/astutils';
 import { containsTag, toComponentName, trailingSlash } from '$main/utils';
 import { Debug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
 
@@ -116,11 +116,28 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
 
     const componentTags = Object.keys(componentMap);
 
-    return function (tree: Parent, file: VFile) {
-
+    function logBefore(config: RemarkSvelteAutoImportOptions, tree: Parent) {
         if ((config.debug & Debug.RootBefore) != 0) {
             debug('Markdown Tree (before)', tree);
         }
+        if ((config.debug & Debug.ScriptBefore) != 0) {
+            debug('Script (before)', locateScriptNode(tree));
+        }
+    }
+
+    function logAfter(config: RemarkSvelteAutoImportOptions, tree: Parent) {
+        if ((config.debug & Debug.ScriptAfter) != 0) {
+            debug('Script (after)', locateScriptNode(tree));
+        }
+
+        if ((config.debug & Debug.RootAfter) != 0) {
+            debug('Markdown Tree (after)', tree);
+        }
+    }
+
+    return function (tree: Parent, file: VFile) {
+
+        logBefore(config, tree);
 
         /**
          * @todo [24-NOV-2023:KASI]   Figure out a proper way to access the textual
@@ -148,9 +165,7 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
         const scriptNode = getOrCreateScriptNode(tree, config.scriptTS ?? false);
         appendScriptText(scriptNode, imBuildImportText(componentMap, usedComponents));
 
-        if ((config.debug & Debug.RootAfter) != 0) {
-            debug('Markdown Tree (after)', tree);
-        }
+        logAfter(config, tree);
 
     }
 
