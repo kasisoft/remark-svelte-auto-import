@@ -25,23 +25,6 @@ export enum Debug {
     All          = Default | RootBefore | RootAfter | ComponentMap
 } /* ENDENUM */
 
-function parseDebug(val: any): number {
-    if (typeof val === 'string') {
-        switch (val) {
-            case 'None': return Debug.None;
-            case 'Default': return Debug.Default;
-            case 'RootBefore': return Debug.RootBefore;
-            case 'RootAfter': return Debug.RootAfter;
-            case 'ScriptBefore': return Debug.ScriptBefore;
-            case 'ScriptAfter': return Debug.ScriptAfter;
-	    case 'ComponentMap': return Debug.ComponentMap;
-            case 'All': return Debug.All;
-        }
-    }
-    // we know from arktype that it's a number
-    return val as number;
-}
-
 export interface RemarkSvelteAutoImportOptions {
 
     debug               : Debug;

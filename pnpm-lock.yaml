@@ -23,9 +23,6 @@ devDependencies:
   '@types/unist':
     specifier: ^3.0.2
     version: 3.0.2
-  arktype:
-    specifier: 1.0.29-alpha
-    version: 1.0.29-alpha
   chalk:
     specifier: ^5.3.0
     version: 5.3.0
@@ -604,10 +601,6 @@ packages:
   /ansi-styles@5.2.0:
     resolution: {integrity: sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==}
     engines: {node: '>=10'}
-    dev: true
-
-  /arktype@1.0.29-alpha:
-    resolution: {integrity: sha512-glMLgVhIQRSkR3tymiS+POAcWVJH09sfrgic0jHnyFL8BlhHAJZX2BzdImU9zYr1y9NBqy+U93ZNrRTHXsKRDw==}
     dev: true
 
   /assertion-error@1.1.0:
