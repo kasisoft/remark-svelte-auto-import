@@ -6,7 +6,7 @@ import { warn, error, debug, debugConfiguration } from '$main/log';
 import { cmBuildComponentMap } from '$main/componentmap';
 import { locateScriptNode } from '$main/astutils';
 import { toComponentName, trailingSlash } from '$main/utils';
-import { Debug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
+import { Debug, parseDebug, RemarkSvelteAutoImportOptions } from '$main/datatypes';
 import { pluginImpl } from './remarksvelteautoimport';
 
 
@@ -87,6 +87,9 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
 
     const config = {...DEFAULT_OPTIONS, ...options};
 
+    /** @todo [23-MAR-2024:KASI]   Needs to be done manually as we don't use arktype yet. */
+    config.debug = parseDebug(config.debug);
+
     // check if we have information to actually create an import list
     if (!hasScanningSettings(config) && !hasComponentMap(config)) {
         error(`You need to specify 'directories' + 'patterns' or 'componentMap'!`);
@@ -112,20 +115,20 @@ export function remarkSvelteAutoImport(options: RemarkSvelteAutoImportOptions = 
     }
 
     function logBefore(config: RemarkSvelteAutoImportOptions, tree: Parent) {
-        if ((config.debug & Debug.RootBefore) != 0) {
+        if (((config.debug as number) & Debug.RootBefore) != 0) {
             debug('Markdown Tree (before)', tree);
         }
-        if ((config.debug & Debug.ScriptBefore) != 0) {
+        if (((config.debug as number) & Debug.ScriptBefore) != 0) {
             debug('Script (before)', locateScriptNode(tree));
         }
     }
 
     function logAfter(config: RemarkSvelteAutoImportOptions, tree: Parent) {
-        if ((config.debug & Debug.ScriptAfter) != 0) {
+        if (((config.debug as number) & Debug.ScriptAfter) != 0) {
             debug('Script (after)', locateScriptNode(tree));
         }
 
-        if ((config.debug & Debug.RootAfter) != 0) {
+        if (((config.debug as number) & Debug.RootAfter) != 0) {
             debug('Markdown Tree (after)', tree);
         }
     }

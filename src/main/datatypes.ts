@@ -22,12 +22,31 @@ export enum Debug {
     ScriptBefore = 1 << 3,
     ScriptAfter  = 1 << 4,
     ComponentMap = 1 << 5,
-    All          = Default | RootBefore | RootAfter | ComponentMap
+    All          = Default | RootBefore | RootAfter | ScriptBefore | ScriptAfter | ComponentMap
 } /* ENDENUM */
 
+export function parseDebug(val: any): number {
+    if (typeof val === 'string') {
+        switch (val) {
+            case 'None': return Debug.None;
+            case 'Default': return Debug.Default;
+            case 'RootBefore': return Debug.RootBefore;
+            case 'RootAfter': return Debug.RootAfter;
+            case 'ScriptBefore': return Debug.ScriptBefore;
+            case 'ScriptAfter': return Debug.ScriptAfter;
+            case 'ComponentMap': return Debug.ComponentMap;
+            case 'All': return Debug.All;
+        }
+    } else if (Array.isArray(val)) {
+        const asArray: string[] = val;
+        return asArray.map(v => parseDebug(v)).reduce((a, b) => a | b, 0);
+    }
+    // we know from arktype that it's a number
+    return val as number;
+}
 export interface RemarkSvelteAutoImportOptions {
 
-    debug               : Debug;
+    debug               : Debug | string | string[];
 
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;

@@ -23,12 +23,12 @@ export enum Debug {
     ScriptBefore = 1 << 3,
     ScriptAfter  = 1 << 4,
     ComponentMap = 1 << 5,
-    All          = Default | RootBefore | RootAfter | ComponentMap
+    All          = Default | RootBefore | RootAfter | ScriptBefore | ScriptAfter | ComponentMap
 } /* ENDENUM */
 
 export interface RemarkSvelteAutoImportOptions {
 
-    debug               : Debug;
+    debug               : Debug | string | string[];
 
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;

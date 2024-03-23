@@ -97,8 +97,11 @@ __RemarkSvelteAutoImportOptions__ is defined as followed:
 ```typescript
 export interface RemarkSvelteAutoImportOptions {
 
-    /* Debug.{None, Default, RootBefore, RootAfter, ScriptBefore, ScriptAfter, ComponentMap} */
-    debug              : Debug;
+    /* Debug.{None, Default, RootBefore, RootAfter, ScriptBefore, ScriptAfter, ComponentMap, All}
+     * It's okay to use a list of string values for the debugging levels.
+     * For instance: ['RootBefore', 'RootAfter']
+     */
+    debug              : Debug | string | string[];
 
     /* generate ts lang attribute for non existent script nodes */
     scriptTS?           : boolean;
@@ -142,9 +145,8 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
   * Debug.ScriptAfter: prints the script node after the transformation
   * Debug.ComponentMap: prints out the component map configuration identified through the transformation process
   * Debug.All: enables all outputs (convenience value)
-* __debugComponentMap__ : boolean - Print out information of the identified components. Be aware that depending on your project this might be a big map which will be printed as a JSON string.
-* __debugRootBefore__ : boolean - Prints the root node before the transformation takes place.
-* __debugRootAfter__ : boolean - Prints the root node after the transformation successfully took place.
+  * Using an array of strings representing these debug settings is also possible. For instance:
+    * ['ScriptBefore', 'RootAfter']
 * __scriptTS__ : boolean - By default a ```lang="ts"``` will be added to each create __script__ tag. If set to __false__ this won't happen.
 * __directories__ : string[] - A list of directories to parse for svelte components.
 * __patterns__ : string[] - A list of patterns to identify svelte components.
