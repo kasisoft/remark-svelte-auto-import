@@ -1,32 +1,30 @@
-import chalk from 'chalk';
-
 const log = console.log;
 
-function buildMsg(msg: string): string {
-    return chalk.bold('rsai: ') + msg;
+function buildMsg(prefix: string, msg: string): string {
+    return prefix + ': [remark-svelte-auto-import] ' + msg;
 }
 
 export function warn(msg: string) {
-    log(chalk.yellow(buildMsg(msg)));
+    log(buildMsg('WARN', msg));
 }
 
 export function info(msg: string) {
-    log(buildMsg(msg));
+    log(buildMsg('INFO', msg));
 }
 
 export function error(msg: string, obj?: any) {
     if (obj) {
-        log(chalk.red(buildMsg(msg) + JSON.stringify(obj, null, 4)));
+        log(buildMsg('ERROR', msg) + JSON.stringify(obj, null, 4));
     } else {
-        log(chalk.red(buildMsg(msg)));
+        log(buildMsg('ERROR', msg));
     }
 }
 
 export function debug(msg: string, obj?: any) {
     if (obj) {
-        log(chalk.blue(buildMsg(msg) + JSON.stringify(obj, null, 4)));
+        log(buildMsg('DEBUG', msg) + JSON.stringify(obj, null, 4));
     } else {
-        log(chalk.blue(buildMsg(msg)));
+        log(buildMsg('DEBUG', msg));
     }
 }
 
