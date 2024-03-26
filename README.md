@@ -156,7 +156,7 @@ export const DEFAULT_OPTIONS: RemarkSvelteAutoImportOptions = {
 
 ## Examples
 
-I'm using this plugin in the following example project: [remark-image-tools](https://github.com/kasisoft/remark-imagetools-example) so you get a working example out of the box (look for the component __Example__).
+I'm using this plugin in the following example project: [remark-image-tools](https://github.com/kasisoft/remark-example) so you get a working example out of the box (look for the component __Example__).
 
 Here are some basic scenarios as well:
 
