@@ -29,13 +29,14 @@ pipeline {
         }
         stage('Testing') {
             steps {
-                sh 'pnpm test:coverage'
+                sh 'pnpm test'
             }
         }
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh '${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=remark-svelte-auto-import -Dsonar.language=ts -Dsonar.sources=src -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
+                    // sh '${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=remark-svelte-auto-import -Dsonar.language=ts -Dsonar.sources=src -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info'
+                    sh '${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=remark-svelte-auto-import -Dsonar.language=ts -Dsonar.sources=src'
                 }
             }
         }
