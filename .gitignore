@@ -26,4 +26,6 @@ dist-ssr
 lib/
 *.tgz
 .vscode/
+.scannerwork/
+coverage/
 
