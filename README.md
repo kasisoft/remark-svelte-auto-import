@@ -3,6 +3,11 @@
 [![Build][build-badge]][build]
 [![StandWithUkraine][ukraine-svg]][ukraine-readme]
 
+> __ __
+> __AS OF 07-JAN-2026 this repository has been moved to ssh://git@git.kasisoft.com/daniel.kasmeroglu/remark-svelte-auto-import.git__
+> __ __
+
+
 ## Contents
 
 * [What is this?](#what-is-this)
